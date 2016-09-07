@@ -1,29 +1,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include "logging.h"
 
 extern FILE* debug_log_file;
-static char LOG_LEVEL;
-static char LOG_BUFFER[DS_LOG_BUFFER_SIZE];
+static char log_level;
+static char log_buffer[DS_LOG_BUFFER_SIZE];
+static char log_file_name[DS_LOG_FILENAME_MAXSIZE];
 
-int dslog_init_logging(char level)
+int init_log(char level)
 {
-    dslog_set_verbosity(level);
+    set_log_level(level);
     return 0;
 }
 
-int dslog_open_file(char* log_file_name)
+int fopen_log(char* file_name)
 {
-    debug_log_file = fopen(log_file_name, "w");
+    PRINT("LOG: Opening log file '%s'...\n", file_name);
+    int filename_len;
+    filename_len = strlen(file_name);
+    if (filename_len == 0)
+    {
+        PRINT("LOG: Empty filename for log file. Won't open any files.\n");
+        debug_log_file = NULL;
+        return -1;
+    };
+    if (filename_len >= DS_LOG_FILENAME_MAXSIZE)
+    {
+        PRINT_DBG("LOG: filename_len = %d, DS_LOG_FILENAME_MAXSIZE = %d\n", filename_len,
+            DS_LOG_FILENAME_MAXSIZE);
+        PRINT("LOG: Filename to create is too long. Won't open any files.\n");
+        debug_log_file = NULL;
+        return -1;
+    }
+
+    debug_log_file = fopen(file_name, "w");
     if (debug_log_file)
+    {
+        strcpy(log_file_name, file_name);
         PRINT("LOG: File '%s' opened\n", log_file_name);
+    }
     else
-        PRINT("LOG: Error opening file '%s'\n", log_file_name);
+        PRINT("LOG: Error opening file '%s'\n", file_name);
     return 0;
 }
 
-int dslog_close_file(void)
+int fclose_log(void)
 {
     int res = 0;
     if (debug_log_file != NULL)
@@ -41,22 +64,22 @@ int dslog_close_file(void)
     return res;
 }
 
-int dslog_print(char verb, const char* format, ...)
+int print_log(char verb, const char* format, ...)
 {
-    if (verb > LOG_LEVEL)
+    if (verb > log_level)
         return 0;
     va_list args;
     va_start(args, format) ;
-    vsprintf(LOG_BUFFER, format, args);
+    vsprintf(log_buffer, format, args);
     va_end(args);
-    printf("%s", LOG_BUFFER);
+    printf("%s", log_buffer);
     if (debug_log_file)
-        fprintf(debug_log_file, "%s", LOG_BUFFER);
+        fprintf(debug_log_file, "%s", log_buffer);
     return 0;
 }
 
-int dslog_set_verbosity(char level)
+int set_log_level(char level)
 {
-    LOG_LEVEL = level;
+    log_level = level;
     return 0;
 }

@@ -5,8 +5,8 @@
 
 int main(void)
 {
-    dslog_init_logging(1);
-    dslog_open_file("debug.log");
+    init_log(DS_VERBOSITY_DBG);
+    fopen_log("debug.log");
     PRINT("Welcome, %s\n", "RbBender");
-    dslog_close_file();
+    fclose_log();
 }
