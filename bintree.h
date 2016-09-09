@@ -6,9 +6,9 @@ struct bintree_node
 {
     int key;
     void* value;
-    struct tree_node* parent;
-    struct tree_node* left_child;
-    struct tree_node* right_child;
+    struct bintree_node* parent;
+    struct bintree_node* left_child;
+    struct bintree_node* right_child;
     char* repr;
 };
 
@@ -21,18 +21,22 @@ struct bin_tree
 };
 
 typedef struct bin_tree* BinTree;
+int BinTreeNode_Print(BinTreeNode);
+int BinTreeNode_PrintLink(BinTreeNode, BinTreeNode);
 BinTreeNode BinTreeNode_Init(int, void*);
 int BinTreeNode_Destroy(BinTreeNode);
+int BinTreeNode_DestroyGracefully(BinTreeNode);
 int BinTreeNode_SetParent(BinTreeNode, BinTreeNode);
 int BinTreeNode_SetLeftChild(BinTreeNode, BinTreeNode);
 int BinTreeNode_SetRightChild(BinTreeNode, BinTreeNode);
-BinTreeNode BinTreeNode_Find(int);
+BinTreeNode BinTreeNode_Find(BinTreeNode, int);
+BinTreeNode BinTreeNode_Insert(BinTreeNode, BinTreeNode);
 int BinTreeNode_SetValue(BinTreeNode, void*);
 
 BinTree BinTree_Init(void);
 int BinTree_Destroy(BinTree);
-void* BinTree_Find(int);
-int BinTree_Insert(int, void*);
-int BinTree_Remove(int);
-int BinTree_SetValue(int, void*);
+void* BinTree_Find(BinTree, int);
+int BinTree_Insert(BinTree, int, void*);
+int BinTree_Remove(BinTree, int);
+int BinTree_SetValue(BinTree, int, void*);
 #endif

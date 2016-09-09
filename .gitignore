@@ -1,2 +1,4 @@
 *.log
 a.out
+.idea/
+CMakeLists.txt
