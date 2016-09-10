@@ -445,4 +445,5 @@ int BinTree_Remove(BinTree tree, int key)
 int BinTree_PrintInOrder(BinTree tree)
 {
     BinTreeNode_PrintInOrder(tree->root);
+    PRINT_DBG("\n");
 }
