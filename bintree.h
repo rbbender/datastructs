@@ -29,8 +29,14 @@ int BinTreeNode_DestroyGracefully(BinTreeNode);
 int BinTreeNode_SetParent(BinTreeNode, BinTreeNode);
 int BinTreeNode_SetLeftChild(BinTreeNode, BinTreeNode);
 int BinTreeNode_SetRightChild(BinTreeNode, BinTreeNode);
+int BinTreeNode_IsLeftChild(BinTreeNode);
+int BinTreeNode_IsRightChild(BinTreeNode);
+BinTreeNode BinTreeNode_Prev(BinTreeNode);
+BinTreeNode BinTreeNode_Next(BinTreeNode);
 BinTreeNode BinTreeNode_Find(BinTreeNode, int);
 BinTreeNode BinTreeNode_Insert(BinTreeNode, BinTreeNode);
+BinTreeNode BinTreeNode_Remove(BinTreeNode);
+void BinTreeNode_PrintInOrder(BinTreeNode);
 int BinTreeNode_SetValue(BinTreeNode, void*);
 
 BinTree BinTree_Init(void);
@@ -39,4 +45,5 @@ void* BinTree_Find(BinTree, int);
 int BinTree_Insert(BinTree, int, void*);
 int BinTree_Remove(BinTree, int);
 int BinTree_SetValue(BinTree, int, void*);
+int BinTree_PrintInOrder(BinTree);
 #endif

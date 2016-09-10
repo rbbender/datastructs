@@ -16,6 +16,13 @@ int BinTreeNode_Print(BinTreeNode n)
     return 0;
 }
 
+char* BinTreeNode_Repr(BinTreeNode n)
+{
+    if (!n)
+        return "";
+    return n->repr;
+}
+
 int BinTreeNode_PrintLink(BinTreeNode n1, BinTreeNode n2)
 {
     BinTreeNode_Print(n1);
@@ -83,9 +90,7 @@ int BinTreeNode_SetRightChild(BinTreeNode node, BinTreeNode rchild)
 
 BinTreeNode BinTreeNode_Find(BinTreeNode node, int key)
 {
-    PRINT_DBG("BinTreeNode_Find: key = %d, node = ", key);
-    BinTreeNode_Print(node);
-    PRINT_DBG("\n");
+    PRINT_DBG("BinTreeNode_Find: key = %d, node = %s\n", key, BinTreeNode_Repr(node));
     BinTreeNode t, p;
     if (!node)
     {
@@ -111,24 +116,16 @@ BinTreeNode BinTreeNode_Find(BinTreeNode node, int key)
     }
     if (!t)
     {
-        PRINT_DBG("BinTreeNode_Find: NOT FOUND. p = ");
-        BinTreeNode_Print(p);
-        PRINT_DBG("\n");
+        PRINT_DBG("BinTreeNode_Find: NOT FOUND. p = %s\n", BinTreeNode_Repr(p));
         return p;
     }
-    PRINT_DBG("BinTreeNode_Find: FOUND. t = ");
-    BinTreeNode_Print(t);
-    PRINT_DBG("\n");
+    PRINT_DBG("BinTreeNode_Find: FOUND. t = %s\n", BinTreeNode_Repr(t));
     return t;
 }
 
 BinTreeNode BinTreeNode_Insert(BinTreeNode root, BinTreeNode node)
 {
-    PRINT_DBG("BinTreeNode_Insert: root = ");
-    BinTreeNode_Print(root);
-    PRINT_DBG(", node = ");
-    BinTreeNode_Print(node);
-    PRINT_DBG("\n");
+    PRINT_DBG("BinTreeNode_Insert: root = %s, node = %s\n", BinTreeNode_Repr(root), BinTreeNode_Repr(node));
     BinTreeNode n;
     if (!root)
     {
@@ -152,21 +149,183 @@ BinTreeNode BinTreeNode_Insert(BinTreeNode root, BinTreeNode node)
     }
     if (node->key < n->key)
     {
-        PRINT_DBG("BinTreeNode_Insert: New left child of ");
-        BinTreeNode_Print(n);
-        PRINT_DBG("\n");
+        PRINT_DBG("BinTreeNode_Insert: New left child of %s\n", BinTreeNode_Repr(n));
         BinTreeNode_SetLeftChild(n, node);
         return node;
     }
     else
     {
-        PRINT_DBG("BinTreeNode_Insert: New right child of ");
-        BinTreeNode_Print(n);
-        PRINT_DBG("\n");
+        PRINT_DBG("BinTreeNode_Insert: New right child of %s\n", BinTreeNode_Repr(n));
         BinTreeNode_SetRightChild(n, node);
         return node;
     }
 }
+
+int BinTreeNode_IsLeftChild(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_IsLeftChild: node = %s\n", BinTreeNode_Repr(node));
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_IsLeftChild: node is NULL. Return 0\n");
+        return 0;
+    }
+    if (!node->parent)
+    {
+        PRINT_DBG("BinTreeNode_IsLeftChild: node->parent is NULL. Return 0\n");
+        return 0;
+    }
+    if (node->parent->left_child == node)
+    {
+        PRINT_DBG("BinTreeNode_IsLeftChild: TRUE: ");
+        BinTreeNode_PrintLink(node->parent, node);
+        PRINT_DBG("\n");
+        return 1;
+    }
+    else
+    {
+        PRINT_DBG("BinTreeNode_IsLeftChild: FALSE: ");
+        BinTreeNode_PrintLink(node->parent, node);
+        PRINT_DBG("\n");
+        return 0;
+    }
+}
+
+int BinTreeNode_IsRightChild(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_IsRightChild: node = %s\n", BinTreeNode_Repr(node));
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_IsRightChild: node is NULL. Return 0\n");
+        return 0;
+    }
+    if (!node->parent)
+    {
+        PRINT_DBG("BinTreeNode_IsRightChild: node->parent is NULL. Return 0\n");
+        return 0;
+    }
+    if (node->parent->right_child == node)
+    {
+        PRINT_DBG("BinTreeNode_IsRightChild: TRUE: ");
+        BinTreeNode_PrintLink(node->parent, node);
+        PRINT_DBG("\n");
+        return 1;
+    }
+    else
+    {
+        PRINT_DBG("BinTreeNode_IsRightChild: FALSE: ");
+        BinTreeNode_PrintLink(node->parent, node);
+        PRINT_DBG("\n");
+        return 0;
+    }
+}
+
+BinTreeNode BinTreeNode_Remove(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_Remove: node = %s\n", BinTreeNode_Repr(node));
+    BinTreeNode next = node;
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_Remove: node is NULL\n");
+        return NULL;
+    }
+    if (!node->left_child && !node->right_child)
+    {
+        PRINT_DBG("BinTreeNode_Remove: node is leaf\n");
+        if(BinTreeNode_IsLeftChild(node))
+            BinTreeNode_SetLeftChild(node->parent, NULL);
+        else if (BinTreeNode_IsRightChild(node))
+            BinTreeNode_SetRightChild(node->parent, NULL);
+        next = NULL;
+    }
+    else if (node->left_child && !node->right_child)
+    {
+        PRINT_DBG("BinTreeNode_Remove: node has only left child\n");
+        if (BinTreeNode_IsLeftChild(node))
+            BinTreeNode_SetLeftChild(node->parent, node->left_child);
+        else if (BinTreeNode_IsRightChild(node))
+            BinTreeNode_SetRightChild(node->parent, node->left_child);
+        next = node->left_child;
+    }
+    else if (!node->left_child && node->right_child)
+    {
+        PRINT_DBG("BinTreeNode_Remove: node has only right child\n");
+        if (BinTreeNode_IsLeftChild(node))
+            BinTreeNode_SetLeftChild(node->parent, node->right_child);
+        else if (BinTreeNode_IsRightChild(node))
+            BinTreeNode_SetRightChild(node->parent, node->right_child);
+        next = node->right_child;
+    }
+    else
+    {
+        PRINT_DBG("BinTreeNode_Remove: Node has both childs, promoting next\n");
+        BinTreeNode n = BinTreeNode_Next(node);
+        BinTreeNode_Remove(n);
+        BinTreeNode_SetLeftChild(n, node->left_child);
+        BinTreeNode_SetRightChild(n, node->right_child);
+        if (BinTreeNode_IsLeftChild(node))
+            BinTreeNode_SetLeftChild(node->parent, n);
+        else
+            BinTreeNode_SetRightChild(node->parent, n);
+        next = n;
+    }
+    BinTreeNode_SetParent(NULL, node);
+    BinTreeNode_SetLeftChild(node, NULL);
+    BinTreeNode_SetRightChild(node, NULL);
+    return next;
+}
+
+BinTreeNode BinTreeNode_Next(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_Next: node = %s\n", BinTreeNode_Repr(node));
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_Next: node is NULL\n");
+        return NULL;
+    }
+
+    BinTreeNode next = node;
+    if (node->right_child)
+    {
+        PRINT_DBG("BinTreeNode_Next: node->right_child not NULL\n");
+        next = node->right_child;
+        while(next->left_child)
+            next = next->left_child;
+    }
+    else if (BinTreeNode_IsLeftChild(node))
+    {
+        PRINT_DBG("BinTreeNode_Next: node is left child\n");
+        next = node->parent;
+    }
+    PRINT_DBG("BinTreeNode_Next: FOUND next = %s\n", BinTreeNode_Repr(next));
+    return next;
+}
+
+BinTreeNode BinTreeNode_Prev(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_Prev: node = %s\n", BinTreeNode_Repr(node));
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_Prev: node is NULL\n");
+        return NULL;
+    }
+
+    BinTreeNode prev = node;
+    if (node->left_child)
+    {
+        PRINT_DBG("BinTreeNode_Prev: node->left_child not NULL\n");
+        prev = node->left_child;
+        while(prev->right_child)
+            prev = prev->right_child;
+    }
+    else if (BinTreeNode_IsRightChild(node))
+    {
+        PRINT_DBG("BinTreeNode_Prev: node is right child\n");
+        prev = node->parent;
+    }
+    PRINT_DBG("BinTreeNode_Prev: FOUND prev = %s\n", BinTreeNode_Repr(prev));
+    return prev;
+}
+
 
 int BinTreeNode_Destroy(BinTreeNode n)
 {
@@ -198,6 +357,15 @@ int BinTreeNode_DestroyGracefully(BinTreeNode n)
     }
     BinTreeNode_Destroy(n);
     return 0;
+}
+
+void BinTreeNode_PrintInOrder(BinTreeNode node)
+{
+    if (!node)
+        return;
+    BinTreeNode_PrintInOrder(node->left_child);
+    PRINT_DBG("%s ", BinTreeNode_Repr(node));
+    BinTreeNode_PrintInOrder(node->right_child);
 }
 
 BinTree BinTree_Init(void)
@@ -241,4 +409,40 @@ void* BinTree_Find(BinTree tree, int key)
     }
     PRINT_DBG("BinTree_Find: NOT FOUND\n");
     return NULL;
+}
+
+int BinTree_Insert(BinTree tree, int key, void* value)
+{
+    BinTreeNode newNode;
+    newNode = BinTreeNode_Init(key, value);
+    BinTreeNode_Insert(tree->root, newNode);
+    if (!tree->root)
+        tree->root = newNode;
+    ++(tree->size);
+    return 0;
+}
+
+int BinTree_Remove(BinTree tree, int key)
+{
+    BinTreeNode node, next;
+    node = BinTreeNode_Find(tree->root, key);
+    if (!node || node->key != key)
+    {
+        PRINT_DBG("BinTree_Remove: node not found\n");
+        return -1;
+    }
+    PRINT_DBG("BinTree_Remove: node = %s\n", BinTreeNode_Repr(node));
+    next = BinTreeNode_Remove(node);
+    if (node == tree->root)
+        tree->root = next;
+    --(tree->size);
+    if (!tree->size)
+        tree->root = NULL;
+    BinTreeNode_Destroy(node);
+    return 0;
+}
+
+int BinTree_PrintInOrder(BinTree tree)
+{
+    BinTreeNode_PrintInOrder(tree->root);
 }
