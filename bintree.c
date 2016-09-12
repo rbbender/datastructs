@@ -63,12 +63,10 @@ int BinTreeNode_SetLeftChild(BinTreeNode node, BinTreeNode lchild)
     PRINT_DBG("BinTreeNode_SetLeftChild: ");
     BinTreeNode_PrintLink(node, lchild);
     PRINT_DBG("\n");
-    if (!node)
-    {
-        PRINT_DBG("BinTreeNode_SetLeftChild: node is NULL. Returning\n");
-        return -1;
-    }
-    node->left_child = lchild;
+    if (node)
+        node->left_child = lchild;
+    else
+        PRINT_DBG("BinTreeNode_SetLeftChild: node is NULL. Just setting it as parent\n");
     BinTreeNode_SetParent(node, lchild);
     return 0;
 }
@@ -78,12 +76,10 @@ int BinTreeNode_SetRightChild(BinTreeNode node, BinTreeNode rchild)
     PRINT_DBG("BinTreeNode_SetRightChild: ");
     BinTreeNode_PrintLink(node, rchild);
     PRINT_DBG("\n");
-    if (!node)
-    {
-        PRINT_DBG("BinTreeNode_SetRightChild: node is NULL. Returning\n");
-        return -1;
-    }
-    node->right_child = rchild;
+    if (node)
+        node->right_child = rchild;
+    else
+        PRINT_DBG("BinTreeNode_SetRightChild: node is NULL. Just setting it as parent\n");
     BinTreeNode_SetParent(node, rchild);
     return 0;
 }
@@ -242,7 +238,7 @@ BinTreeNode BinTreeNode_Remove(BinTreeNode node)
         PRINT_DBG("BinTreeNode_Remove: node has only left child\n");
         if (BinTreeNode_IsLeftChild(node))
             BinTreeNode_SetLeftChild(node->parent, node->left_child);
-        else if (BinTreeNode_IsRightChild(node))
+        else
             BinTreeNode_SetRightChild(node->parent, node->left_child);
         next = node->left_child;
     }
@@ -251,7 +247,7 @@ BinTreeNode BinTreeNode_Remove(BinTreeNode node)
         PRINT_DBG("BinTreeNode_Remove: node has only right child\n");
         if (BinTreeNode_IsLeftChild(node))
             BinTreeNode_SetLeftChild(node->parent, node->right_child);
-        else if (BinTreeNode_IsRightChild(node))
+        else
             BinTreeNode_SetRightChild(node->parent, node->right_child);
         next = node->right_child;
     }
@@ -364,8 +360,43 @@ void BinTreeNode_PrintInOrder(BinTreeNode node)
     if (!node)
         return;
     BinTreeNode_PrintInOrder(node->left_child);
-    PRINT_DBG("%s ", BinTreeNode_Repr(node));
+    PRINT("%s ", BinTreeNode_Repr(node));
     BinTreeNode_PrintInOrder(node->right_child);
+}
+
+int BinTreeNode_PrintSubTree(BinTreeNode node, int level_limit)
+{
+    int nodes = 1;
+    int cur_level_limit;
+    int next_level_position;
+    int i;
+    BinTreeNode temp;
+    if (!node) {
+        PRINT_DBG("BinTreeNode_PrintSubTree: node is NULL\n");
+        return -1;
+    }
+    for (i=1; i < level_limit; ++i) {
+        nodes += 1 << i;
+    }
+
+    BinTreeNode* nodeQueue = (BinTreeNode*) malloc (nodes * sizeof(BinTreeNode));
+    nodeQueue[0] = node;
+    next_level_position = 1;
+    i = 0;
+    while(i < next_level_position)
+    {
+        cur_level_limit = next_level_position;
+        for (; i < cur_level_limit; ++i) {
+            temp = nodeQueue[i];
+            BinTreeNode_Print(temp);
+            if (temp->left_child)
+                nodeQueue[next_level_position++] = temp->left_child;
+            if (temp->right_child)
+                nodeQueue[next_level_position++] = temp->right_child;
+        }
+        PRINT_DBG("\n");
+    }
+    free(nodeQueue);
 }
 
 BinTree BinTree_Init(void)
@@ -445,5 +476,14 @@ int BinTree_Remove(BinTree tree, int key)
 int BinTree_PrintInOrder(BinTree tree)
 {
     BinTreeNode_PrintInOrder(tree->root);
-    PRINT_DBG("\n");
+    PRINT("\n");
+}
+
+int BinTree_PrintSubTree(BinTree tree, int key, int levels)
+{
+    PRINT_DBG("BinTree_PrintSubTree: tree at %p, key = %d, levels = %d\n", tree, key, levels);
+    BinTreeNode node = BinTreeNode_Find(tree->root, key);
+    if (!node || node->key != key)
+        return -1;
+    BinTreeNode_PrintSubTree(node, levels);
 }
