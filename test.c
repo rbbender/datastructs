@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "logging.h"
 #include "bintree.h"
+#include "avltree.h"
 
 
 int main(void)
@@ -10,6 +11,7 @@ int main(void)
     fopen_log("debug.log");
     void* val;
     int res;
+    BinTreeNode temp;
     BinTree tree = BinTree_Init();
     BinTree_Insert(tree, 2, (void*) "node2");
     BinTree_Insert(tree, 3, (void*) "node3");
@@ -40,10 +42,23 @@ int main(void)
     BinTree_Insert(tree, 3, (void*) "node3-1");
     BinTree_Insert(tree, 5, (void*) "node5-1");
     BinTree_PrintSubTree(tree, 2, 3);
+    temp = BinTreeNode_Find(tree->root, 4);
+    BinTreeNode_RotateLeft(temp);
+    BinTree_PrintSubTree(tree, 2, 3);
+    temp = BinTreeNode_Find(tree->root, 5);
+    BinTreeNode_RotateRight(temp);
+    BinTree_PrintSubTree(tree, 2, 3);
     BinTree_PrintInOrder(tree);
     BinTree_Remove(tree, 2);
     BinTree_PrintInOrder(tree);
     BinTreeNode_PrintSubTree(tree->root, 3);
     BinTree_Destroy(tree);
+    AVLTreeNode t1, t2;
+    t1 = AVLTreeNode_Init(1, (void*) "avlnode1");
+    t2 = AVLTreeNode_Init(2, (void*) "avlnode2");
+    AVLTreeNode_Insert(t1, t2);
+    BinTreeNode_PrintSubTree((BinTreeNode) t1, 1);
+    PRINT_DBG("%d\n", t1->size);
+    PRINT_DBG("%d\n", t2->size);
     fclose_log();
 }

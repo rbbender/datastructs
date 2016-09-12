@@ -1,7 +1,8 @@
-#ifndef DS_BINTREE
-#define DS_BINTREE
+#ifndef DATASTRUCTS_BINTREE_H
+#define DATASTRUCTS_BINTREE_H
 
 #define DS_BINTREE_MAXREPR 64
+
 struct bintree_node
 {
     int key;
@@ -23,7 +24,7 @@ struct bin_tree
 typedef struct bin_tree* BinTree;
 int BinTreeNode_Print(BinTreeNode);
 int BinTreeNode_PrintLink(BinTreeNode, BinTreeNode);
-BinTreeNode BinTreeNode_Init(int, void*);
+BinTreeNode BinTreeNode_Init(int, void*, BinTreeNode);
 int BinTreeNode_Destroy(BinTreeNode);
 int BinTreeNode_DestroyGracefully(BinTreeNode);
 int BinTreeNode_SetParent(BinTreeNode, BinTreeNode);
@@ -39,6 +40,8 @@ BinTreeNode BinTreeNode_Insert(BinTreeNode, BinTreeNode);
 BinTreeNode BinTreeNode_Remove(BinTreeNode);
 void BinTreeNode_PrintInOrder(BinTreeNode);
 int BinTreeNode_SetValue(BinTreeNode, void*);
+int BinTreeNode_RotateLeft(BinTreeNode);
+int BinTreeNode_RotateRight(BinTreeNode);
 
 BinTree BinTree_Init(void);
 int BinTree_Destroy(BinTree);

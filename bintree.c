@@ -31,10 +31,15 @@ int BinTreeNode_PrintLink(BinTreeNode n1, BinTreeNode n2)
     return 0;
 }
 
-BinTreeNode BinTreeNode_Init(int key, void* val_p)
+BinTreeNode BinTreeNode_Init(int key, void* val_p, BinTreeNode obj)
 {
-    PRINT_DBG("BinTreeNode_Init: START: key = %d, val_p = %p\n", key, val_p);
-    BinTreeNode res = (BinTreeNode) malloc(sizeof(struct bintree_node));
+    PRINT_DBG("BinTreeNode_Init: START: key = %d, val_p = %p, obj = %p\n", key, val_p, obj);
+    BinTreeNode res;
+    res = obj;
+    if (!res)
+        res = (BinTreeNode) malloc(sizeof(struct bintree_node));
+    else
+        PRINT_DBG("BinTreeNode_Init: re-using existing object\n");
     res->key = key;
     res->value = val_p;
     res->parent = res->left_child = res->right_child = NULL;
@@ -399,6 +404,52 @@ int BinTreeNode_PrintSubTree(BinTreeNode node, int level_limit)
     free(nodeQueue);
 }
 
+int BinTreeNode_RotateLeft(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_RotateLeft: %s\n", BinTreeNode_Repr(node));
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_RotateLeft: node is NULL\n", BinTreeNode_Repr(node));
+        return -1;
+    }
+    BinTreeNode parent = node->parent;
+    BinTreeNode lc, rc;
+    lc = rc = NULL;
+    rc = node->right_child;
+    if (rc)
+        lc = rc->left_child;
+    BinTreeNode_SetRightChild(node, lc);
+    if (BinTreeNode_IsLeftChild(node))
+        BinTreeNode_SetLeftChild(parent, rc);
+    else
+        BinTreeNode_SetRightChild(parent, rc);
+    BinTreeNode_SetLeftChild(rc, node);
+    return 0;
+}
+
+int BinTreeNode_RotateRight(BinTreeNode node)
+{
+    PRINT_DBG("BinTreeNode_RotateRight: %s\n", BinTreeNode_Repr(node));
+    if (!node)
+    {
+        PRINT_DBG("BinTreeNode_RotateRight: node is NULL\n", BinTreeNode_Repr(node));
+        return -1;
+    }
+    BinTreeNode parent = node->parent;
+    BinTreeNode lc, rc;
+    lc = rc = NULL;
+    lc = node->left_child;
+    if (lc)
+        rc = lc->right_child;
+    BinTreeNode_SetLeftChild(node, rc);
+    if (BinTreeNode_IsLeftChild(node))
+        BinTreeNode_SetLeftChild(parent, lc);
+    else
+        BinTreeNode_SetRightChild(parent, lc);
+    BinTreeNode_SetRightChild(lc, node);
+    return 0;
+}
+
 BinTree BinTree_Init(void)
 {
     PRINT_DBG("BinTree_Init: Initializing new BinTree\n");
@@ -445,7 +496,7 @@ void* BinTree_Find(BinTree tree, int key)
 int BinTree_Insert(BinTree tree, int key, void* value)
 {
     BinTreeNode newNode;
-    newNode = BinTreeNode_Init(key, value);
+    newNode = BinTreeNode_Init(key, value, NULL);
     BinTreeNode_Insert(tree->root, newNode);
     if (!tree->root)
         tree->root = newNode;
