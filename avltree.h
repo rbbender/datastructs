@@ -13,7 +13,7 @@ struct avltree_node
     struct avltree_node* left_child;
     struct avltree_node* right_child;
     char* repr;
-    int size;
+    int height;
 };
 
 typedef struct avltree_node* AVLTreeNode;
@@ -26,9 +26,39 @@ struct avl_tree
 
 typedef struct avl_tree* AVLTree;
 
+char* AVLTreeNode_Repr(AVLTreeNode);
+int AVLTreeNode_Print(AVLTreeNode);
+int AVLTreeNode_PrintLink(AVLTreeNode, AVLTreeNode);
 AVLTreeNode AVLTreeNode_Init(int, void*);
+int AVLTreeNode_Destroy(AVLTreeNode);
+int AVLTreeNode_DestroyGracefully(AVLTreeNode);
+int AVLTreeNode_SetParent(AVLTreeNode, AVLTreeNode);
+int AVLTreeNode_SetLeftChild(AVLTreeNode, AVLTreeNode);
+int AVLTreeNode_SetRightChild(AVLTreeNode, AVLTreeNode);
+int AVLTreeNode_IsLeftChild(AVLTreeNode);
+int AVLTreeNode_IsRightChild(AVLTreeNode);
+int AVLTreeNode_PrintSubTree(AVLTreeNode, int);
+AVLTreeNode AVLTreeNode_Prev(AVLTreeNode);
+AVLTreeNode AVLTreeNode_Next(AVLTreeNode);
 AVLTreeNode AVLTreeNode_Insert(AVLTreeNode, AVLTreeNode);
-int AVLTreeNode_AdjustSize(AVLTreeNode);
+void AVLTreeNode_PrintInOrder(AVLTreeNode);
+int AVLTreeNode_SetValue(AVLTreeNode, void*);
+int AVLTreeNode_RotateLeft(AVLTreeNode);
+int AVLTreeNode_RotateRight(AVLTreeNode);
+int AVLTreeNode_AdjustHeight(AVLTreeNode);
+AVLTreeNode AVLTreeNode_Remove(AVLTreeNode);
+AVLTreeNode AVLTreeNode_Find(AVLTreeNode, int);
+int AVLTreeNode_RebalanceLeft(AVLTreeNode);
+int AVLTreeNode_RebalanceRight(AVLTreeNode);
+int AVLTreeNode_Rebalance(AVLTreeNode);
+int AVLTreeNode_GetHeight(AVLTreeNode);
 
+
+AVLTree AVLTree_Init(void);
+int AVLTree_Destroy(AVLTree tree);
+void* AVLTree_Find(AVLTree tree, int key);
+int AVLTree_Insert(AVLTree tree, int key, void* value);
+int AVLTree_Remove(AVLTree tree, int key);
+int AVLTree_PrintSubTree(AVLTree tree, int key, int levels);
 
 #endif //DATASTRUCTS_AVLTREE_H

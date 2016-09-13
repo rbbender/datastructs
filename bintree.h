@@ -22,6 +22,7 @@ struct bin_tree
 };
 
 typedef struct bin_tree* BinTree;
+char* BinTreeNode_Repr(BinTreeNode);
 int BinTreeNode_Print(BinTreeNode);
 int BinTreeNode_PrintLink(BinTreeNode, BinTreeNode);
 BinTreeNode BinTreeNode_Init(int, void*, BinTreeNode);

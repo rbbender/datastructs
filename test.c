@@ -4,11 +4,8 @@
 #include "bintree.h"
 #include "avltree.h"
 
-
-int main(void)
+int test_BinTree(void)
 {
-    init_log(DS_VERBOSITY_DBG);
-    fopen_log("debug.log");
     void* val;
     int res;
     BinTreeNode temp;
@@ -53,12 +50,24 @@ int main(void)
     BinTree_PrintInOrder(tree);
     BinTreeNode_PrintSubTree(tree->root, 3);
     BinTree_Destroy(tree);
-    AVLTreeNode t1, t2;
-    t1 = AVLTreeNode_Init(1, (void*) "avlnode1");
-    t2 = AVLTreeNode_Init(2, (void*) "avlnode2");
-    AVLTreeNode_Insert(t1, t2);
-    BinTreeNode_PrintSubTree((BinTreeNode) t1, 1);
-    PRINT_DBG("%d\n", t1->size);
-    PRINT_DBG("%d\n", t2->size);
+    return 0;
+}
+
+int test_AVLTree(void)
+{
+    AVLTree tree = AVLTree_Init();
+    AVLTree_Insert(tree, 1, (void*) "node1");
+    AVLTree_Insert(tree, 2, (void*) "node2");
+    AVLTree_Insert(tree, 3, (void*) "node3");
+    AVLTree_Insert(tree, 4, (void*) "node4");
+    AVLTree_PrintSubTree(tree, 3, 3);
+    AVLTree_Destroy(tree);
+}
+int main(void)
+{
+    init_log(DS_VERBOSITY_DBG);
+    fopen_log("debug.log");
+    test_BinTree();
+    test_AVLTree();
     fclose_log();
 }
