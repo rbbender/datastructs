@@ -4,8 +4,11 @@
 #include "bintree.h"
 #include "avltree.h"
 
+#define CONST 1000000001
+
 int test_BinTree(void)
 {
+    PRINT("---- test_BinTree ----\n");
     void* val;
     int res;
     BinTreeNode temp;
@@ -50,23 +53,45 @@ int test_BinTree(void)
     BinTree_PrintInOrder(tree);
     BinTreeNode_PrintSubTree(tree->root, 3);
     BinTree_Destroy(tree);
+    PRINT("---- /test_BinTree ----\n");
     return 0;
 }
 
 int test_AVLTree(void)
 {
+    PRINT("---- test_AVLTree ----\n");
     AVLTree tree = AVLTree_Init();
     AVLTree_Insert(tree, 1, (void*) "node1");
     AVLTree_Insert(tree, 2, (void*) "node2");
     AVLTree_Insert(tree, 3, (void*) "node3");
     AVLTree_Insert(tree, 4, (void*) "node4");
-    AVLTree_PrintSubTree(tree, 3, 3);
+    AVLTree_PrintSubTree(tree, tree->root->key, 3);
+    AVLTree_Insert(tree, 5, (void*) "node4");
+    AVLTree_PrintSubTree(tree, tree->root->key, 3);
+    AVLTree_Insert(tree, 6, (void*) "node4");
+    AVLTree_PrintSubTree(tree, tree->root->key, 3);
+    AVLTree_Remove(tree, 2);
+    AVLTree_PrintSubTree(tree, tree->root->key, 3);
+    AVLTree_Remove(tree, 5);
+    AVLTree_PrintSubTree(tree, tree->root->key, 3);
+    AVLTree_PrintRange(tree, 3, 6);
     AVLTree_Destroy(tree);
+    PRINT("---- /test_AVLTree ----\n");
 }
+
+int test_Trees(char filename[])
+{
+    PRINT("---------------------------- test_Trees: %s ----------------------------------------\n", filename);
+    long long sum_result;
+    sum_result = 0;
+
+
+}
+
 int main(void)
 {
-    init_log(DS_VERBOSITY_DBG);
-    fopen_log("debug.log");
+    init_log(DS_VERBOSITY_STD);
+    fopen_log("/home/rbbender/temp/debug.log");
     test_BinTree();
     test_AVLTree();
     fclose_log();

@@ -52,6 +52,7 @@ int AVLTreeNode_RebalanceLeft(AVLTreeNode);
 int AVLTreeNode_RebalanceRight(AVLTreeNode);
 int AVLTreeNode_Rebalance(AVLTreeNode);
 int AVLTreeNode_GetHeight(AVLTreeNode);
+AVLTreeNode AVLTreeNode_FindRoot(AVLTreeNode);
 
 
 AVLTree AVLTree_Init(void);
@@ -60,5 +61,6 @@ void* AVLTree_Find(AVLTree tree, int key);
 int AVLTree_Insert(AVLTree tree, int key, void* value);
 int AVLTree_Remove(AVLTree tree, int key);
 int AVLTree_PrintSubTree(AVLTree tree, int key, int levels);
+void AVLTree_PrintRange(AVLTree, int, int);
 
 #endif //DATASTRUCTS_AVLTREE_H

@@ -192,6 +192,10 @@ int AVLTreeNode_Rebalance(AVLTreeNode node) {
     return AVLTreeNode_GetHeight(node);
 }
 
+AVLTreeNode AVLTreeNode_FindRoot(AVLTreeNode node)
+{
+    return (AVLTreeNode) BinTreeNode_FindRoot((BinTreeNode) node);
+}
 
 AVLTree AVLTree_Init(void) {
     AVLTree res = (AVLTree) malloc(sizeof(struct avl_tree));
@@ -232,6 +236,7 @@ int AVLTree_Insert(AVLTree tree, int key, void* value)
     if (!tree->root)
         tree->root = newNode;
     ++(tree->size);
+    tree->root = AVLTreeNode_FindRoot(tree->root);
     return 0;
 }
 
@@ -258,4 +263,15 @@ int AVLTree_Remove(AVLTree tree, int key)
 int AVLTree_PrintSubTree(AVLTree tree, int key, int levels)
 {
     return BinTree_PrintSubTree((BinTree) tree, key, levels);
+}
+
+void AVLTree_PrintRange(AVLTree tree, int lborder, int rborder)
+{
+    AVLTreeNode start = AVLTreeNode_Find(tree->root, lborder);
+    while (start && start->key <= rborder)
+    {
+        if (start->key >= lborder)
+            PRINT("%d ", start->key);
+        start = AVLTreeNode_Next(start);
+    }
 }
