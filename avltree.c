@@ -37,7 +37,7 @@ AVLTreeNode AVLTreeNode_Insert(AVLTreeNode root, AVLTreeNode node)
     AVLTreeNode res;
     res = (AVLTreeNode) BinTreeNode_Insert((BinTreeNode) root, (BinTreeNode) node);
     AVLTreeNode_Rebalance(res);
-    return res;
+    return AVLTreeNode_FindRoot(res);
 }
 
 int AVLTreeNode_Destroy(AVLTreeNode node)
@@ -79,6 +79,28 @@ int AVLTreeNode_PrintSubTree(AVLTreeNode root, int level_limit)
 {
     return BinTreeNode_PrintSubTree((BinTreeNode) root, level_limit);
 }
+
+
+AVLTreeNode AVLTreeNode_LeftAncestor(AVLTreeNode n)
+{
+    return (AVLTreeNode) BinTreeNode_LeftAncestor((BinTreeNode) n);
+}
+
+AVLTreeNode AVLTreeNode_RightDescendant(AVLTreeNode n)
+{
+    return (AVLTreeNode) BinTreeNode_RightDescendant((BinTreeNode) n);
+}
+
+AVLTreeNode AVLTreeNode_RightAncestor(AVLTreeNode n)
+{
+    return (AVLTreeNode) BinTreeNode_RightAncestor((BinTreeNode) n);
+}
+
+AVLTreeNode AVLTreeNode_LeftDescendant(AVLTreeNode n)
+{
+    return (AVLTreeNode) BinTreeNode_LeftDescendant((BinTreeNode) n);
+}
+
 AVLTreeNode AVLTreeNode_Prev(AVLTreeNode node)
 {
     return (AVLTreeNode) BinTreeNode_Prev((BinTreeNode) node);
